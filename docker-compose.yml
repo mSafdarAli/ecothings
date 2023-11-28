@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  web:
+    container_name: eco-frontend
+    build: ./eco-things-frontend
+    ports:
+      - 80:80
+    networks:
+      node-network:  
+  api:
+    container_name: eco-backend
+    build: ./eco-things-backend
+    ports:
+      - 3000:3000
+    environment:
+      MONGO_INITDB_DATABASE: ecothings 
+    depends_on:
+      - db
+    volumes:
+      - ./db-data/mongo/:/data/db
+    networks:
+      - node-network
+  db:
+    container_name: mongo-container
+    restart: always
+    image: mongo:4.0-xenial
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata6:/data/db
+    networks:
+      - node-network  
+volumes:
+  dbdata6:
+networks:
+  node-network:
+    driver: bridge  
